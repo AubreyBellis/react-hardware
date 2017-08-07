@@ -20,7 +20,8 @@
  		  description: 'Heavy Duty Hammer Time',
  		  price: 12.3,
  		    }
- 	    ],
+       ],
+          cartList: [],
     };
  }
   _toggleEditSaleItem = () => {
@@ -42,8 +43,33 @@
     productList.splice(productkey, 1);
      this.setState({productList});
 }
- 
+   _addProductToCart = (index) => {
+    const product = {...this.state.productList[index]};
+    const cartList = [...this.state.cartList];
+
+    cartList.push(product);
+
+    this.setState({cartList});
+  };
+
+  _removeProductFromCart = (index) => {
+    const cartList = [...this.state.cartList];
+
+    cartList.splice(index, 1);
+
+    this.setState({cartList});
+  };
+
 render() {
+
+    const adminView = <AdminView
+        productList={this.state.productList}
+        addNewProductToProductList={this._addNewProductToProductList}
+        deleteProductFromListByIndex={this._deleteProductFromListByIndex}/>;
+
+    const shopView = <ShopView
+        productList={this.state.productList}
+        addProductToCart={this._addProductToCart}/>;
      return (
          <div>
            <h1>Aubrey's Handy Hardware</h1>
@@ -68,20 +94,26 @@ render() {
    deleteProductFromProductList={this._deleteProductFromProductList}/>
 
    </div>
-   </div>
+   <div>
+<button onClick={this._toggleAdminView}>
+                  {this.state.showAdminView
+                      ? 'Show Shop View'
+                      : 'Show Admin View'}
+                </button>
+                </div>
+          
+          <div id="view-container">
+            {this.state.showAdminView ? adminView : shopView}
 
-      
-    
-     );
-   }
- }
- 
- export default HomePage;
+            <CartView
+                productList={this.state.cartList}
+                removeProductFromCart={this._removeProductFromCart}/>
+          </div>
+          </div>
+          
+  
+    );
+  }
+}
 
-
-
-
-
-
-
- 
+export default HomePage;
